@@ -39,19 +39,21 @@
                 <div class="card-header d-flex">
                     <h4 class="card-title mb-0">Notícias cadastradas</h4>
 
-                    <form class="d-flex w-50 ml-auto" method="POST" action={{ route('noticias.search') }}>
+                    <div class="d-flex w-50 ml-auto">
                         @csrf
-                        <input class="form-control" placeholder="Pesquisar notícia por título" name="termoPesquisa" />
+                        <input id="termoPesquisa"
+                               class="form-control"
+                               placeholder="Pesquisar notícia por título"
+                        />
 
-                        <button class="btn btn-link d-flex" type="submit">
+                        <button class="btn btn-link d-flex" type="submit" onclick="pesquisarNoticia()">
                             <i class="tim-icons icon-zoom-split my-auto"></i>
                         </button>
-                    </form>
+                    </div>
                 </div>
                 <div class="card-body">
-
                     @if ($noticias->count())
-                        <ul class="list-group">
+                        <ul id="noticiasCadastradas" class="list-group">
                             @foreach ($noticias as $noticia)
                                 <li class="list-group-item">
                                     <span>{{ $noticia->titulo }}</span>
@@ -66,7 +68,7 @@
                                             Editar
                                         </button>
 
-                                        <form method="post" action={{ route('noticias.apagar', $noticia) }}>
+                                        <form method="post" action={{ route('noticias.destroy', $noticia) }}>
                                             @csrf
                                             @method('DELETE')
 
@@ -81,6 +83,18 @@
                             Nenhuma notícia encontrada!
                         </div>
                     @endif
+
+                    <div id="containerPesquisa" style="display:none">
+                        <div class="d-flex bg-primary text-white text-center px-2 py-1 rounded">
+                            <span id="infoTermoPesquisa" class="font-weight-bold"></span>
+                            <button class="btn btn-link text-white p-0 d-flex align-items-center ml-auto"
+                                    onclick="limparPesquisa()">
+                                <i class="tim-icons icon-simple-remove"></i>
+                            </button>
+                        </div>
+
+                        <ul id="resultadosPesquisa" class="list-group mt-3"></ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -127,6 +141,43 @@
             $('#idNoticia').val(noticia.id);
             $('#editarTitulo').val(noticia.titulo);
             $('#editarCorpo').val(noticia.corpo);
+        }
+
+        function pesquisarNoticia() {
+            var resultadosPesquisa = [];
+            var termoPesquisa = $('#termoPesquisa').val();
+            var noticias = $('#noticiasCadastradas').children().clone();
+
+            for (var i = 0; i < noticias.length; i++) {
+                if (noticias[i].children[0].innerText.includes(termoPesquisa)) {
+                    resultadosPesquisa.push(noticias[i]);
+                }
+            }
+
+            if ($('#containerPesquisa').attr('style').length > 0) {
+                $('#noticiasCadastradas').slideToggle('fast');
+                $('#resultadosPesquisa').empty();
+
+                resultadosPesquisa.forEach((resultado) => $('#resultadosPesquisa').append(resultado));
+                $('#containerPesquisa').slideDown('slow');
+            } else {
+                $('#containerPesquisa').slideToggle('fast');
+
+                $('#resultadosPesquisa').empty();
+
+                resultadosPesquisa.forEach((resultado) => $('#resultadosPesquisa').append(resultado));
+                $('#containerPesquisa').slideToggle('fast');
+            }
+
+            resultadosPesquisa.length > 0
+                ? $('#infoTermoPesquisa').text(`Resultados para "${termoPesquisa}"`)
+                : $('#infoTermoPesquisa').text(`Nenhum resultado encontrado para "${termoPesquisa}"`);
+        }
+
+        function limparPesquisa() {
+            $('#containerPesquisa').slideUp('fast');
+            $('#noticiasCadastradas').slideToggle('slow');
+            $('#termoPesquisa').val('');
         }
     </script>
 @endpush

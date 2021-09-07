@@ -11,7 +11,7 @@ Projeto criado utilizando funções básicas do [Laravel](https://laravel.com).
 
 Nele é possível:
 
-- Cadastrar e Autenticar usuários,
-- Criar, alterar e deletar Notícias,
-- Listar notícias cadastradas,
+- Cadastrar e Autenticar usuários;
+- Criar, alterar e deletar Notícias;
+- Listar notícias cadastradas;
 - Pesquisar na listagem das notícias.

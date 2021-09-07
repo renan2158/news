@@ -13,9 +13,7 @@ Route::get('/noticias', [NoticiaController::class, 'index'])->name('noticias.ind
 Route::post('/noticias', [NoticiaController::class, 'store'])->name('noticias.store');
 Route::put('/noticias', [NoticiaController::class, 'update'])->name('noticias.update');
 
-Route::post('/noticias/resultado-pesquisa', [NoticiaController::class, 'search'])->name('noticias.search');
-
-Route::delete('/noticias/{noticia}', [NoticiaController::class, 'destroy'])->name('noticias.apagar');
+Route::delete('/noticias/{noticia}', [NoticiaController::class, 'destroy'])->name('noticias.destroy');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
